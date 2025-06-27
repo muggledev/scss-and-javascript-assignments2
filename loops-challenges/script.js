@@ -2,7 +2,7 @@
 
 const prompt = require("prompt-sync")();
 
-const chosenNum = 47;
+const chosenNum = Math.floor(Math.random() * 100) + 1;
 let numberOfGuesses = 0;
 
 while (true) {
