@@ -14,17 +14,20 @@ function wait(milliseconds) {
 
 async function playGame() {
   let balance = 10.0;
+  let winnings = 0.0;
+
+  console.log("Welcome to the Slot Machine!");
+  console.log("Each pull costs $0.25. Match 3 symbols to win!");
+  console.log("Type 'e' and press enter at any time to exit.\n");
 
   while (balance >= 0.25) {
-    console.log("\nYour current balance is: $" + balance.toFixed(2));
-    console.log("Each pull of the lever will cost you $0.25");
-    console.log("Pull the slot machine lever by pressing 'enter/return'...");
+    console.log("Your balance: $" + balance.toFixed(2));
+    console.log("Total winnings: $" + winnings.toFixed(2));
 
-    let input = prompt(" ");
-
-    if (input !== "") {
-      console.log("Please press 'enter' or 'return' to play...");
-      continue;
+    let input = prompt("Press 'enter' to pull the lever or type 'e' to exit: ");
+    if (input.toLowerCase() === "e") {
+      console.log("You chose to exit the game.");
+      break;
     }
 
     balance -= 0.25;
@@ -35,28 +38,32 @@ async function playGame() {
 
     console.log("Spinning...");
     await wait(800);
-    console.log(`First slot: ${slot1}`);
+    process.stdout.write(`[ ${slot1} `);
     await wait(800);
-    console.log(`Second slot: ${slot2}`);
+    process.stdout.write(` ${slot2} `);
     await wait(800);
-    console.log(`Third slot: ${slot3}`);
+    process.stdout.write(` ${slot3} ]\n`);
+    await wait(800);
     console.log("-----------------------------");
 
     if (slot1 === slot2 && slot2 === slot3) {
       if (slot1 === "$") {
-        console.log("JACKPOT! You won the grand prize!");
+        console.log("JACKPOT! You won $5.00!");
+        balance += 5.0;
+        winnings += 5.0;
       } else {
-        console.log("You won!");
+        console.log("You matched three symbols and won $1.00!");
+        balance += 1.0;
+        winnings += 1.0;
       }
-      break;
     } else {
       console.log("No match. Try again!\n");
     }
   }
 
-  if (balance < 0.25) {
-    console.log("\n You're out of money! Game Over.");
-  }
+  console.log("\nGame Over!");
+  console.log("Total winnings: $" + winnings.toFixed(2));
+  console.log("Final balance: $" + balance.toFixed(2));
 }
 
 playGame();
