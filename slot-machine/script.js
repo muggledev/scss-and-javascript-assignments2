@@ -1,9 +1,3 @@
-// So we want 3 symbols and we want it to run over each of them one at a time.
-// Create a function that Use a randomizer
-// Create a key or loop through the randomizer options to win or lose
-// Check foundations capstone for while loop that continues until you hit cancel
-// You'll have a starting balance and you can continue until they're out of money or they win
-
 const prompt = require("prompt-sync")();
 
 const combinations = ["$", "%", "#"];
@@ -13,24 +7,37 @@ function wait(milliseconds) {
 }
 
 async function playGame() {
-  let balance = 10.0;
+  let balance = 100.0;
   let winnings = 0.0;
 
   console.log("Welcome to the Slot Machine!");
-  console.log("Each pull costs $0.25. Match 3 symbols to win!");
+  console.log("Match 3 symbols to win! JACKPOT if you hit 3 '$'!");
+  console.log("You start with $" + balance.toFixed(2));
   console.log("Type 'e' and press enter at any time to exit.\n");
 
-  while (balance >= 0.25) {
-    console.log("Your balance: $" + balance.toFixed(2));
+  while (balance > 0) {
+    console.log("Your current balance: $" + balance.toFixed(2));
     console.log("Total winnings: $" + winnings.toFixed(2));
 
-    let input = prompt("Press 'enter' to pull the lever or type 'e' to exit: ");
+    let input = prompt("Enter bet amount or type 'e' to exit: ");
     if (input.toLowerCase() === "e") {
-      console.log("You chose to exit the game.");
+      console.log("Thanks for playing! Exiting game...");
       break;
     }
 
-    balance -= 0.25;
+    let bet = parseFloat(input);
+
+    if (isNaN(bet) || bet <= 0) {
+      console.log("Invalid bet. Please enter a positive number.");
+      continue;
+    }
+
+    if (bet > balance) {
+      console.log("You can't bet more than your current balance.");
+      continue;
+    }
+
+    balance -= bet;
 
     let slot1 = combinations[Math.floor(Math.random() * combinations.length)];
     let slot2 = combinations[Math.floor(Math.random() * combinations.length)];
@@ -48,17 +55,26 @@ async function playGame() {
 
     if (slot1 === slot2 && slot2 === slot3) {
       if (slot1 === "$") {
-        console.log("JACKPOT! You won $5.00!");
-        balance += 5.0;
-        winnings += 5.0;
+        let prize = bet * 3;
+        console.log(`JACKPOT! You won $${prize.toFixed(2)}!`);
+        balance += prize;
+        winnings += prize;
       } else {
-        console.log("You matched three symbols and won $1.00!");
-        balance += 1.0;
-        winnings += 1.0;
+        let prize = bet * 2;
+        console.log(`You matched three symbols and won $${prize.toFixed(2)}!`);
+        balance += prize;
+        winnings += prize;
       }
     } else {
       console.log("No match. Try again!\n");
     }
+
+    if (balance <= 0) {
+      console.log("\nYou're out of money!");
+      break;
+    }
+
+    await wait(500);
   }
 
   console.log("\nGame Over!");
