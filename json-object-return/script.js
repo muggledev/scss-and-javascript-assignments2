@@ -26,3 +26,7 @@ users.forEach((user) => {
 });
 
 // CHALLENGE 2
+
+const characterId = prompt("Enter a Star Wars character ID (1-83):");
+
+const fetchCharacter = getCharacter(characterId);
